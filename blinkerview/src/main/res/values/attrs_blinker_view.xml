@@ -7,6 +7,11 @@
         <attr name="blink_duration" format="float" />
         <attr name="blink_autostart" format="boolean" />
         <attr name="blink_use_fading" format="boolean" />
+        <attr name="blink_scale_type" format="enum">
+            <enum name="stretch" value="0" />
+            <enum name="constrain" value="1" />
+            <enum name="center" value="2" />
+        </attr>
 
     </declare-styleable>
 
