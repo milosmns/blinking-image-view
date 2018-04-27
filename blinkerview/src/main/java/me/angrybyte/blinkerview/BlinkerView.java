@@ -7,6 +7,8 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,6 +32,11 @@ public class BlinkerView extends View {
 
     private static final String TAG = BlinkerView.class.getSimpleName();
     private static final int DEF_DURATION = 500; // ms
+    private static final String KEY_SCALE_TYPE = "blinker_scale_type";
+    private static final String KEY_DURATION = "blinker_duration";
+    private static final String KEY_FADE = "blinker_fade";
+    private static final String KEY_BLINK = "blinker_should_blink";
+    private static final String KEY_SUPER_STATE = "blinker_super_state";
 
     @Retention(SOURCE)
     @IntDef({SCALE_STRETCH, SCALE_CONSTRAIN, SCALE_CENTER})
@@ -40,9 +47,9 @@ public class BlinkerView extends View {
     @ScaleType
     private int mScaleType = SCALE_STRETCH;
     private int mDuration = DEF_DURATION;
-    private boolean mAutostart;
     private boolean mFade = true;
     private Rect mDrawableBounds = new Rect();
+    private boolean mShouldBlink = false;
 
     // <editor-fold desc="Constructors">
     public BlinkerView(final @NonNull Context context) {
@@ -73,10 +80,38 @@ public class BlinkerView extends View {
         mDrawable = attributes.getDrawable(R.styleable.BlinkerView_blink_drawable);
         mScaleType = attributes.getInteger(R.styleable.BlinkerView_blink_scale_type, mScaleType);
         mDuration = attributes.getInteger(R.styleable.BlinkerView_blink_duration, mDuration);
-        mAutostart = attributes.getBoolean(R.styleable.BlinkerView_blink_autostart, mAutostart);
         mFade = attributes.getBoolean(R.styleable.BlinkerView_blink_use_fading, mFade);
+        mShouldBlink = attributes.getBoolean(R.styleable.BlinkerView_blink_autostart, false);
 
         attributes.recycle();
+    }
+
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        final Parcelable originalState = super.onSaveInstanceState();
+        final Bundle state = new Bundle();
+        state.putInt(KEY_SCALE_TYPE, mScaleType);
+        state.putInt(KEY_DURATION, mDuration);
+        state.putBoolean(KEY_FADE, mFade);
+        state.putBoolean(KEY_BLINK, mShouldBlink);
+        state.putParcelable(KEY_SUPER_STATE, originalState);
+        return state;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@Nullable final Parcelable outerState) {
+        if (outerState instanceof Bundle) {
+            final Bundle state = (Bundle) outerState;
+            super.onRestoreInstanceState(state.getParcelable(KEY_SUPER_STATE));
+            mScaleType = state.getInt(KEY_SCALE_TYPE);
+            mDuration = state.getInt(KEY_DURATION);
+            mFade = state.getBoolean(KEY_FADE);
+            mShouldBlink = state.getBoolean(KEY_BLINK);
+        }
+        if (mShouldBlink) {
+            startBlinking();
+        }
     }
 
     @ScaleType
@@ -105,10 +140,28 @@ public class BlinkerView extends View {
         invalidate();
     }
 
+    @SuppressWarnings("unused")
+    public void startBlinking() {
+        mShouldBlink = true;
+    }
+
+    @SuppressWarnings("unused")
+    public void stopBlinking() {
+        stopBlinking(true);
+    }
+
+    private void stopBlinking(boolean setFlag) {
+        if (setFlag) {
+            mShouldBlink = false;
+        }
+    }
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        // TODO start blinking if blinking was enabled
+        if (mShouldBlink) {
+            startBlinking();
+        }
     }
 
     @Override
@@ -136,7 +189,7 @@ public class BlinkerView extends View {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        // TODO stop blinking
+        stopBlinking(false);
     }
 
     /* Private helpers */
