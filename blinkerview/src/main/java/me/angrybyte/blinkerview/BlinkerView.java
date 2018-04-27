@@ -154,29 +154,29 @@ public class BlinkerView extends View {
     private void updateDrawableBounds() {
         if (mDrawable == null) return;
 
-        final int originalW, originalH;
+        final int intrinsicW, intrinsicH;
         switch (mScaleType) {
             case SCALE_STRETCH:
                 applyStretchBounds();
                 break;
             case SCALE_CONSTRAIN:
-                originalW = mDrawable.getIntrinsicWidth();
-                originalH = mDrawable.getIntrinsicHeight();
-                if (originalW == -1 || originalH == -1) {
+                intrinsicW = mDrawable.getIntrinsicWidth();
+                intrinsicH = mDrawable.getIntrinsicHeight();
+                if (intrinsicW == -1 || intrinsicH == -1) {
                     Log.w(TAG, "Drawable has no intrinsic width/height, stretching...");
                     applyStretchBounds();
                 } else {
-                    applyConstrainBounds(originalW, originalH);
+                    applyConstrainBounds(intrinsicW, intrinsicH);
                 }
                 break;
             case SCALE_CENTER:
-                originalW = mDrawable.getIntrinsicWidth();
-                originalH = mDrawable.getIntrinsicHeight();
-                if (originalW == -1 || originalH == -1) {
+                intrinsicW = mDrawable.getIntrinsicWidth();
+                intrinsicH = mDrawable.getIntrinsicHeight();
+                if (intrinsicW == -1 || intrinsicH == -1) {
                     Log.w(TAG, "Drawable has no intrinsic width/height, stretching...");
                     applyStretchBounds();
                 } else {
-                    applyCenterBounds(originalW, originalH);
+                    applyCenterBounds(intrinsicW, intrinsicH);
                 }
                 break;
             default:
@@ -221,7 +221,7 @@ public class BlinkerView extends View {
         mDrawableBounds.left = getWidth() / 2 - intrinsicW / 2;
         mDrawableBounds.top = getHeight() / 2 - intrinsicH / 2;
         mDrawableBounds.right = getWidth() / 2 + intrinsicW / 2;
-        mDrawableBounds.bottom = getHeight() / 2 - intrinsicH / 2;
+        mDrawableBounds.bottom = getHeight() / 2 + intrinsicH / 2;
     }
 
 }

@@ -10,8 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/holo_purple"
-        android:padding="127dp"
         app:blink_drawable="@android:drawable/presence_away"
-        app:blink_scale_type="constrain" />
+        app:blink_scale_type="center" />
 
 </LinearLayout>
