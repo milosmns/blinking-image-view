@@ -31,7 +31,7 @@ public class BlinkerView extends View {
     public static final int SCALE_CENTER = 2;
 
     private static final String TAG = BlinkerView.class.getSimpleName();
-    private static final int DEF_DURATION = 500; // ms
+    private static final int DEF_INTERVAL = 500; // ms
     private static final String KEY_SCALE_TYPE = "blinker_scale_type";
     private static final String KEY_DURATION = "blinker_duration";
     private static final String KEY_FADE = "blinker_fade";
@@ -46,7 +46,7 @@ public class BlinkerView extends View {
     private Drawable mDrawable;
     @ScaleType
     private int mScaleType = SCALE_STRETCH;
-    private int mDuration = DEF_DURATION;
+    private int mInterval = DEF_INTERVAL;
     private boolean mFade = true;
     private Rect mDrawableBounds = new Rect();
     private boolean mShouldBlink = false;
@@ -67,6 +67,7 @@ public class BlinkerView extends View {
         init(context, attrs, defStyleAttr, 0);
     }
 
+    @SuppressWarnings("unused")
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public BlinkerView(final @NonNull Context context, @Nullable final AttributeSet attrs, final int defStyleAttr, final int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -79,7 +80,7 @@ public class BlinkerView extends View {
 
         mDrawable = attributes.getDrawable(R.styleable.BlinkerView_blink_drawable);
         mScaleType = attributes.getInteger(R.styleable.BlinkerView_blink_scale_type, mScaleType);
-        mDuration = attributes.getInteger(R.styleable.BlinkerView_blink_duration, mDuration);
+        mInterval = attributes.getInteger(R.styleable.BlinkerView_blink_interval, mInterval);
         mFade = attributes.getBoolean(R.styleable.BlinkerView_blink_use_fading, mFade);
         mShouldBlink = attributes.getBoolean(R.styleable.BlinkerView_blink_autostart, false);
 
@@ -92,7 +93,7 @@ public class BlinkerView extends View {
         final Parcelable originalState = super.onSaveInstanceState();
         final Bundle state = new Bundle();
         state.putInt(KEY_SCALE_TYPE, mScaleType);
-        state.putInt(KEY_DURATION, mDuration);
+        state.putInt(KEY_DURATION, mInterval);
         state.putBoolean(KEY_FADE, mFade);
         state.putBoolean(KEY_BLINK, mShouldBlink);
         state.putParcelable(KEY_SUPER_STATE, originalState);
@@ -105,7 +106,7 @@ public class BlinkerView extends View {
             final Bundle state = (Bundle) outerState;
             super.onRestoreInstanceState(state.getParcelable(KEY_SUPER_STATE));
             mScaleType = state.getInt(KEY_SCALE_TYPE);
-            mDuration = state.getInt(KEY_DURATION);
+            mInterval = state.getInt(KEY_DURATION);
             mFade = state.getBoolean(KEY_FADE);
             mShouldBlink = state.getBoolean(KEY_BLINK);
         }
@@ -136,6 +137,20 @@ public class BlinkerView extends View {
     @SuppressWarnings("unused")
     public void setDrawable(@Nullable final Drawable drawable) {
         mDrawable = drawable;
+        updateDrawableBounds();
+        invalidate();
+    }
+
+    @Override
+    public void setPadding(final int left, final int top, final int right, final int bottom) {
+        super.setPadding(left, top, right, bottom);
+        updateDrawableBounds();
+        invalidate();
+    }
+
+    @Override
+    public void setPaddingRelative(final int start, final int top, final int end, final int bottom) {
+        super.setPaddingRelative(start, top, end, bottom);
         updateDrawableBounds();
         invalidate();
     }

@@ -4,7 +4,7 @@
     <declare-styleable name="BlinkerView">
 
         <attr name="blink_drawable" format="reference" />
-        <attr name="blink_duration" format="float" />
+        <attr name="blink_interval" format="float" />
         <attr name="blink_autostart" format="boolean" />
         <attr name="blink_use_fading" format="boolean" />
         <attr name="blink_scale_type" format="enum">
