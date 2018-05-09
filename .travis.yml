@@ -3,8 +3,8 @@ os: linux
 language: android
 sudo: false # Required for the new container-based infrastructure setup
 branches:
-  except:
-  - release
+  only:
+    - release
 
 # Setup environment variables
 env:
@@ -12,7 +12,9 @@ env:
     - PLATFORM_TOOLS=27.0.1
     - BUILD_TOOLS=27.0.3
     - COMPILE_SDK=27
-    # - ADB_INSTALL_TIMEOUT=15 # Wait up to 15 minutes for adb to connect to the emulator
+    - ANDROID_TARGET=android-22 # Enable for connected checks on emulators (Google doesn't support Linux ARMv7 emulation for SDK 23+)
+    - ANDROID_ABI=armeabi-v7a # Enable for connected checks on emulators
+    - ADB_INSTALL_TIMEOUT=15 # Wait up to 15 minutes for adb to connect to the emulator
 
 # Enable only JDK 8, source does not build with JDK 7
 addons:
@@ -36,7 +38,7 @@ install:
   - echo y | android update sdk -u -a -t extra-google-m2repository
   - echo y | android update sdk -u -a -t extra-android-m2repository
   - echo y | android update sdk -u -a -t extra-google-android-support
-  # - echo y | android update sdk -u -a -t addon-google_apis-google-${COMPILE_SDK}
+  - echo y | android update sdk -u -a -t addon-google_apis-google-${COMPILE_SDK}
 
 # Configure Android
 android:
@@ -56,11 +58,21 @@ android:
 
     # Compile SDK
     - android-${COMPILE_SDK}
+    # Emulator SDK
+    - ${ANDROID_TARGET}
 
     # Additional components
     - extra-google-m2repository
     - extra-android-m2repository
     - extra-google-android-support
+
+    # To run emulator(s) during tests, enable some of these: (Linux ARMv7 goes up to 22 only)
+    # - sys-img-armeabi-v7a-android-22
+    # - sys-img-armeabi-v7a-android-21
+    # - sys-img-armeabi-v7a-android-19
+    # - sys-img-armeabi-v7a-android-14
+    # - sys-img-armeabi-v7a-android-9
+    - sys-img-${ANDROID_ABI}-${ANDROID_TARGET} # Configurable system image
 
 # Use Gradle's cache (unlock on start)
 before_cache:
@@ -73,14 +85,43 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 
+# Start up the emulator
+before_script:
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell setprop dalvik.vm.dexopt-flags v=n,o=v
+  - adb shell input keyevent 82 & # Unlock emulator if locked
 # Execute the script
 script:
+  # Build and prepare
   - ./gradlew clean
-  - ./gradlew build
   - ./gradlew assemble
-  # - ./gradlew demo:check
+  - ./gradlew app:check
+  - ./gradlew build
   # - ./gradlew build jacocoTestReport
+
+  # To run device CodeCov tests, enable these lines (requires an Android emulator)
+  - ./gradlew assembleAndroidTest
+  - ./gradlew connectedCheck
 
 # Start CodeCov bash script when done with everything
 # after_success:
   # - bash <(curl -s https://codecov.io/bash)
+
+# Setup the deployment step (only on release branches) - upload to GitHub Releases and Bintray
+before_deploy:
+  - ./gradlew clean blinkerview:install blinkerview:bintrayUpload
+  - ./gradlew clean assemble
+deploy:
+  provider: releases
+  api_key: ${GITHUB_OAUTH_TOKEN}
+  file_glob: true
+  file: app/build/outputs/apk/*
+  skip_cleanup: true
+  overwrite: true
+  on:
+    tag: true
+    branch: release
+after_deploy:
+  - echo "Deployment finished."
