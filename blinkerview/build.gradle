@@ -53,3 +53,6 @@ android {
 dependencies {
     implementation "com.android.support:appcompat-v7:$APPCOMPAT"
 }
+
+// Maven push plugin
+apply from: '../gradle/gradle-mvn-push.gradle'
