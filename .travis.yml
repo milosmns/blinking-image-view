@@ -1,0 +1,86 @@
+# Basic runner configuration
+os: linux
+language: android
+sudo: false # Required for the new container-based infrastructure setup
+branches:
+  except:
+  - release
+
+# Setup environment variables
+env:
+  global:
+    - PLATFORM_TOOLS=27.0.1
+    - BUILD_TOOLS=27.0.3
+    - COMPILE_SDK=27
+    # - ADB_INSTALL_TIMEOUT=15 # Wait up to 15 minutes for adb to connect to the emulator
+
+# Enable only JDK 8, source does not build with JDK 7
+addons:
+  apt:
+    packages:
+      - oracle-java8-installer
+jdk: oraclejdk8
+
+# ************************************************* #
+#                                                   #
+# Don't forget to check versions in '/build.gradle' #
+#                                                   #
+# ************************************************* #
+
+# Pre-configuration step (accept all licenses manually)
+install:
+  - echo y | android update sdk -u -a -t tools
+  - echo y | android update sdk -u -a -t platform-tools
+  - echo y | android update sdk -u -a -t build-tools-${BUILD_TOOLS}
+  - echo y | android update sdk -u -a -t android-${COMPILE_SDK}
+  - echo y | android update sdk -u -a -t extra-google-m2repository
+  - echo y | android update sdk -u -a -t extra-android-m2repository
+  - echo y | android update sdk -u -a -t extra-google-android-support
+  # - echo y | android update sdk -u -a -t addon-google_apis-google-${COMPILE_SDK}
+
+# Configure Android
+android:
+  # Auto-accept these licenses
+  licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+    - '.+'
+
+  # Build script config
+  components:
+    - tools # Workaround part 1: Get the new `repository-*.xml`
+    - tools # Workaround part 1: Install latest Android SDK tools
+    - build-tools-${BUILD_TOOLS}
+    - platform-tools
+
+    # Compile SDK
+    - android-${COMPILE_SDK}
+
+    # Additional components
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - extra-google-android-support
+
+# Use Gradle's cache (unlock on start)
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  apt: true
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
+# Execute the script
+script:
+  - ./gradlew clean
+  - ./gradlew build
+  - ./gradlew assemble
+  # - ./gradlew demo:check
+  # - ./gradlew build jacocoTestReport
+
+# Start CodeCov bash script when done with everything
+# after_success:
+  # - bash <(curl -s https://codecov.io/bash)

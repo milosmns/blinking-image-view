@@ -2,6 +2,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -9,13 +10,35 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.github.dcendents.android-maven" version "1.5" // used for uploading to mavenCentral
+    id "com.jfrog.bintray" version "1.8.0" // used for uploading to jCenter
+    id "me.tatarka.retrolambda" version "3.6.0" // allowing Lambdas on Java 7 and older
+}
+
 allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+ext {
+    // If changed, commit and merge to 'release' branch to auto-deploy. Only tagged commits on release branch will be deployed
+    VERSION_CODE = 80
+    VERSION_NAME = "0.8.0"
+    SIGNING_NAME = "blinkerview"
+
+    // don't forget to update CI config in: '.travis.yml'
+    BUILD_TOOLS = "27.0.3"
+    MINIMUM_SDK = 15
+    COMPILE_SDK = 27
+    TARGET_SDK = 27
+
+    // app/library module dependency versions
+    APPCOMPAT = "27.1.1"
+    // ESPRESSO = "2.2.2"
+    // JUNIT = "4.12"
+    // ROBOLECTRIC = "3.3.2"
 }
