@@ -26,8 +26,8 @@ allprojects {
 
 ext {
     // If changed, commit and merge to 'release' branch to auto-deploy. Only tagged commits on release branch will be deployed
-    VERSION_CODE = 80
-    VERSION_NAME = "0.8.0"
+    VERSION_CODE = 90
+    VERSION_NAME = "0.9.0"
     SIGNING_NAME = "blinkerview"
 
     // don't forget to update CI config in: '.travis.yml'
