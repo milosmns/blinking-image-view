@@ -49,7 +49,9 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 
     // local dependency
-    // implementation project(':blinkerview')
+    implementation project(':blinkerview')
+
     // global dependency
-    implementation "me.angrybyte.blinkerview:blinkerview:$VERSION_NAME"
+    // implementation "me.angrybyte.blinkerview:blinkerview:$VERSION_NAME"
+
 }
