@@ -1,4 +1,4 @@
-Silly Android
+Blinker View for Android
 =============
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Build Status](https://travis-ci.org/milosmns/blinking-image-view.svg?branch=master)](https://travis-ci.org/milosmns/blinking-image-view)
@@ -44,35 +44,31 @@ If you want other attributes available on the view class too, please submit a re
 
 Setup
 -----
-- Gradle build - `jCenter` and `mavenCentral` are both supported
-- **AppCompat**, minimum version `25.0.2` - _Silly Android_ heavily relies on the features provided by this library. Note that including other versions might work too, but don't report issues if it does not. You've been warned! 
 
-To include _Silly Android_ in your app, add the following line to your app's `build.gradle`'s `dependecies` block.
+Both `jCenter` and `mavenCentral` are supported for this dependency.  
+To include the `BlinkerView` in your app, add the following line to your **app**'s `build.gradle` **`dependecies`** block.
 ```gradle
-    // look for the latest version on top of this file
-    compile "me.angrybyte.sillyandroid:sillyandroid:VERSION_NAME" 
+    // look for the latest version on top of this file and replace the placeholder with it
+    implementation "me.angrybyte.blinkerview:blinkerview:LATEST_VERSION" 
 ```
+If you're using the View in a library module and would like the dependency to go through to your main project as well, then you should use `api` instead of 
+`implementation` in the dependency declaration.  
+For older Gradle versions, these keywords are not supported, so you should use the `compile` keyword.
 
-Code organization
------------------
-
-- The backbone of the library is here: `me.angrybyte.sillyandroid.SillyAndroid`. It contains various utilities to help around with accessing APIs more easily.
-- Check out the `me.angrybyte.sillyandroid.extras.Coloring` class for various color and drawable utilities.
-- Android components such as Activity, Fragment, Dialog, View and ViewGroup have been enhanced to include features from the _Silly Android_ internally, you can check that out in the `me.angrybyte.sillyandroid.components` package. They are now called `EasyActivity`, `EasyFragment` and so on.
-- Even more enhancements are added to the _Easy_ component set using _Silly Android_'s annotations, such as View injections, typed `T findView(int id)` methods, automated click and long-click handling, and more. For information about that, see package `me.angrybyte.sillyandroid.parsable.components`.
-- For a coded demo of the fully enhanced Activity class, go to `me.angrybyte.sillyandroid.demo.MainActivity`.
-- Check out the colors, UI sizes and text sizes added in `sillyandroid/src/main/res`.
-
-Contributions and how we determine what to include
---------------------------------------------------
-All interested parties need to create a new [Feature request](https://github.com/milosmns/silly-android/issues/new) so that everyone involved in active development can discuss the feature or the workaround described. Any pull request not referencing a _Feature request_ will be automatically denied. You need to have actual reasons backed up by real-world facts in order to include stuff in the library - otherwise, we would have a huge library with lots of useless components that would need to be removed with ProGuard (and we don't want to be another AppCompat).
-
-Furthermore, we are trying to test everything that's not trivial and keep the code as clean as humanly possible; thus, any pull requests that fail the CI code quality check or fail to properly pass the tests will also be denied. If pull requests pass every check (and don't worry, it's not impossible to pass), one of the admins could then merge the changes to the `release` branch - this triggers a CI build with device/emulator tests. If all goes ok, the library is automatically deployed to `jCenter` and `MavenCentral`.
+Contributions
+-------------
+All interested parties need to create a new [Feature request](https://github.com/milosmns/blinking-image-view/issues/new) so that everyone involved in active 
+development can discuss the feature or the workaround described. Any pull request not referencing a _Feature request_ will be automatically denied.  
+Furthermore, we are trying to test everything that's not trivial and keep the code as clean as humanly possible; thus, any pull requests that fail the CI code 
+quality check or fail to properly pass the tests will also be automatically denied. 
+If pull requests pass every check (and don't worry, it's really not impossible to pass those), one of the maintainers could then merge the changes to the 
+`release` branch - this triggers a CI build with device/emulator tests; and, if all goes ok, the library is automatically deployed to `jCenter` and `MavenCentral`.
 
 Further support
 ---------------
-In case of emergency errors, please [create an issue](https://github.com/milosmns/silly-android/issues/new).
-We missed something really useful? Have an idea for a cleaner API? [Fork this project](https://github.com/milosmns/silly-android/fork) and submit a pull request through GitHub. Keep in mind that you need a _Feature request_ first with a finalized discussion (see the Contributions section).
-Some more help may be found here:
-- StackOverflow [here](http://stackoverflow.com/questions/tagged/silly-android)
+In case of emergency errors, please [create an issue](https://github.com/milosmns/blinking-image-view/issues/new).
+Want to add something? Sure, just [fork this project](https://github.com/milosmns/blinking-image-view/fork) and submit a pull request through GitHub. 
+Keep in mind that you need a _Feature request_ first with a finalized discussion (see the Contributions section).
+Some more help could potentially be found here:
+- StackOverflow, [here](http://stackoverflow.com/questions/tagged/blinking-image-view)
 - [On my blog](http://angrybyte.me)
