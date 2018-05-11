@@ -32,7 +32,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
  */
 public class BlinkerView extends View {
 
-    private static String TAG = BlinkerView.class.getSimpleName();
+    private static final String TAG = BlinkerView.class.getSimpleName();
     private static final String KEY_SCALE_TYPE = "blinker_scale_type";
     private static final String KEY_DURATION = "blinker_duration";
     private static final String KEY_FADE = "blinker_fade";
@@ -46,7 +46,7 @@ public class BlinkerView extends View {
     public static final int SCALE_CENTER = 2;
 
     @Retention(SOURCE)
-    @IntDef({ SCALE_STRETCH, SCALE_CONSTRAIN, SCALE_CENTER })
+    @IntDef({SCALE_STRETCH, SCALE_CONSTRAIN, SCALE_CENTER})
     public @interface ScaleType {}
     // </editor-fold>
 
@@ -259,6 +259,7 @@ public class BlinkerView extends View {
      *
      * @return {@code True} if blinker is set to blink when attached to window, {@code false} if not
      */
+    @SuppressWarnings("unused")
     public boolean isBlinkingOn() {
         return mShouldBlink;
     }
