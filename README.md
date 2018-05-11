@@ -1,7 +1,7 @@
 Blinker View for Android
 =============
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Build Status](https://travis-ci.org/milosmns/blinking-image-view.svg?branch=master)](https://travis-ci.org/milosmns/blinking-image-view)
+[![Build Status](https://travis-ci.org/milosmns/blinking-image-view.svg?branch=release)](https://travis-ci.org/milosmns/blinking-image-view)
 [![Download](https://api.bintray.com/packages/milosmns/maven/blinkerview/images/download.svg)](https://bintray.com/milosmns/maven/blinkerview/_latestVersion)
 
 What is this?
